@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Add authentication check here
-// if (!isset($_SESSION['super_admin'])) {
+// if (!isset($_SESSION['asset_officer'])) {
 //     header('Location: login.php');
 //     exit();
 // }
@@ -10,7 +10,7 @@ session_start();
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Super Admin Dashboard | Financial Management System</title>
+  <title>Asset Management Dashboard | Financial Management System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Favicon -->
@@ -28,18 +28,20 @@ session_start();
         extend: {
           colors: {
             primary: '#1E293B',
-            accent: '#2563EB',
+            accent: '#7C3AED', // Purple for asset management
             success: '#22C55E',
             danger: '#EF4444',
             warning: '#F59E0B',
             info: '#3B82F6',
-            navbar: '#4750DD',
+            navbar: '#5B21B6', // Dark purple for navbar
             sidebar: '#1E293B',
-            'accent-light': '#E0E7FF',
+            'accent-light': '#EDE9FE', // Light purple
             'success-light': '#DCFCE7',
             'danger-light': '#FEE2E2',
             'warning-light': '#FEF3C7',
-            'gray-150': '#F3F4F6'
+            'gray-150': '#F3F4F6',
+            'asset-blue': '#0EA5E9',
+            'asset-green': '#10B981'
           },
           fontFamily: {
             'inter': ['Inter', 'system-ui', 'sans-serif']
@@ -150,6 +152,12 @@ session_start();
     .notification-item:hover {
       background-color: #f9fafb;
     }
+    
+    /* Asset status indicators */
+    .status-active { background-color: #DCFCE7; color: #16A34A; }
+    .status-idle { background-color: #FEF3C7; color: #D97706; }
+    .status-maintenance { background-color: #FEE2E2; color: #DC2626; }
+    .status-retired { background-color: #F3F4F6; color: #6B7280; }
   </style>
 </head>
 
@@ -161,8 +169,8 @@ session_start();
     <div class="flex items-center gap-2">
       <img src="../assets/bcpnobg.png" class="h-8 w-8" alt="BCP Logo">
       <div>
-        <span class="font-bold text-gray-900 text-lg">BCP Financial Hub</span>
-        <span class="ml-2 text-xs bg-accent text-white px-2 py-0.5 rounded-full font-semibold">SUPER ADMIN</span>
+        <span class="font-bold text-gray-900 text-lg">Asset Management Hub</span>
+        <span class="ml-2 text-xs bg-accent text-white px-2 py-0.5 rounded-full font-semibold">ASSET OFFICER</span>
       </div>
     </div>
   </div>
@@ -181,8 +189,8 @@ session_start();
       <div class="notification-dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
         <div class="px-4 py-3 border-b border-gray-100">
           <div class="flex items-center justify-between">
-            <h3 class="font-semibold text-gray-900 text-sm">Notifications</h3>
-            <span class="text-xs bg-accent text-white px-2 py-0.5 rounded-full">3 new</span>
+            <h3 class="font-semibold text-gray-900 text-sm">Asset Alerts</h3>
+            <span class="text-xs bg-accent text-white px-2 py-0.5 rounded-full">4 new</span>
           </div>
         </div>
         
@@ -190,17 +198,17 @@ session_start();
           <!-- Notification items -->
           <a href="#" class="notification-item block px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-smooth">
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 bg-success-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              <div class="w-8 h-8 bg-danger-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">Budget Approved</p>
-                <p class="text-xs text-gray-500 mt-0.5">Department X budget for Q2 has been approved</p>
-                <span class="text-xs text-gray-400 mt-1 block">10 min ago</span>
+                <p class="text-sm font-medium text-gray-900 truncate">Maintenance Overdue</p>
+                <p class="text-xs text-gray-500 mt-0.5">Server Rack #SR-204 needs inspection</p>
+                <span class="text-xs text-gray-400 mt-1 block">2 hours ago</span>
               </div>
-              <div class="w-2 h-2 bg-accent rounded-full flex-shrink-0 mt-1"></div>
+              <div class="w-2 h-2 bg-danger rounded-full flex-shrink-0 mt-1"></div>
             </div>
           </a>
           
@@ -208,13 +216,13 @@ session_start();
             <div class="flex items-start gap-3">
               <div class="w-8 h-8 bg-warning-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">Over Budget Alert</p>
-                <p class="text-xs text-gray-500 mt-0.5">Project Y is 15% over allocated budget</p>
-                <span class="text-xs text-gray-400 mt-1 block">2 hours ago</span>
+                <p class="text-sm font-medium text-gray-900 truncate">Insurance Renewal</p>
+                <p class="text-xs text-gray-500 mt-0.5">Vehicle fleet insurance due in 7 days</p>
+                <span class="text-xs text-gray-400 mt-1 block">1 day ago</span>
               </div>
               <div class="w-2 h-2 bg-accent rounded-full flex-shrink-0 mt-1"></div>
             </div>
@@ -222,15 +230,15 @@ session_start();
           
           <a href="#" class="notification-item block px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-smooth">
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 bg-danger-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <div class="w-8 h-8 bg-success-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">Security Alert</p>
-                <p class="text-xs text-gray-500 mt-0.5">Multiple failed login attempts detected</p>
-                <span class="text-xs text-gray-400 mt-1 block">4 hours ago</span>
+                <p class="text-sm font-medium text-gray-900 truncate">New Asset Registered</p>
+                <p class="text-xs text-gray-500 mt-0.5">10 new laptops added to inventory</p>
+                <span class="text-xs text-gray-400 mt-1 block">2 days ago</span>
               </div>
             </div>
           </a>
@@ -239,28 +247,28 @@ session_start();
             <div class="flex items-start gap-3">
               <div class="w-8 h-8 bg-accent-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">System Update</p>
-                <p class="text-xs text-gray-500 mt-0.5">New security patches available</p>
-                <span class="text-xs text-gray-400 mt-1 block">1 day ago</span>
+                <p class="text-sm font-medium text-gray-900 truncate">Depreciation Report</p>
+                <p class="text-xs text-gray-500 mt-0.5">Monthly depreciation report ready</p>
+                <span class="text-xs text-gray-400 mt-1 block">3 days ago</span>
               </div>
             </div>
           </a>
           
           <a href="#" class="notification-item block px-4 py-3 hover:bg-gray-50 transition-smooth">
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 bg-success-light rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              <div class="w-8 h-8 bg-asset-blue/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-asset-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">Backup Completed</p>
-                <p class="text-xs text-gray-500 mt-0.5">Daily system backup successful</p>
-                <span class="text-xs text-gray-400 mt-1 block">2 days ago</span>
+                <p class="text-sm font-medium text-gray-900 truncate">Warranty Expiring</p>
+                <p class="text-xs text-gray-500 mt-0.5">5 assets warranty expires this month</p>
+                <span class="text-xs text-gray-400 mt-1 block">1 week ago</span>
               </div>
             </div>
           </a>
@@ -268,7 +276,7 @@ session_start();
         
         <div class="border-t border-gray-100 pt-2">
           <a href="#" class="block text-center text-sm text-accent font-medium py-2 hover:bg-gray-50 rounded-b-lg transition-smooth">
-            View All Notifications
+            View All Asset Alerts
           </a>
         </div>
       </div>
@@ -278,11 +286,11 @@ session_start();
     <div class="dropdown-container relative">
       <div class="flex items-center gap-3 border-l border-gray-200 pl-4 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-smooth">
         <div class="text-right">
-          <p class="font-medium text-gray-900 text-sm">Super Administrator</p>
-          <p class="text-xs text-gray-500">System Owner</p>
+          <p class="font-medium text-gray-900 text-sm">Robert Johnson</p>
+          <p class="text-xs text-gray-500">Asset Management Officer</p>
         </div>
         <div class="relative">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="h-9 w-9 rounded-full border-2 border-accent">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AssetOfficer" class="h-9 w-9 rounded-full border-2 border-accent">
           <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
         </div>
       </div>
@@ -290,7 +298,7 @@ session_start();
       <!-- User Profile Dropdown -->
       <div class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
         <div class="px-4 py-2 border-b border-gray-100">
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Account</p>
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Asset Management</p>
         </div>
         
         <a href="#" class="dropdown-item flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-smooth">
@@ -309,7 +317,16 @@ session_start();
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
           </div>
-          <span class="text-sm text-gray-700">Settings</span>
+          <span class="text-sm text-gray-700">Asset Settings</span>
+        </a>
+        
+        <a href="#" class="dropdown-item flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-smooth">
+          <div class="w-5 h-5 text-gray-500">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <span class="text-sm text-gray-700">Asset Reports</span>
         </a>
         
         <div class="border-t border-gray-100 pt-2">
@@ -335,276 +352,303 @@ session_start();
   <!-- Main Content -->
   <main class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50">
     
-    <!-- System Overview Cards -->
+    <!-- Asset Overview Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="bg-white rounded-lg shadow p-4 border-l-4 border-accent stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">System Users</p>
-            <p class="text-2xl font-bold mt-1">1,247</p>
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Assets</p>
+            <p class="text-2xl font-bold mt-1">1,248</p>
           </div>
           <div class="p-2 bg-accent-light rounded-lg">
             <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 3.75a6 6 0 00-9.5-4.197"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
             </svg>
           </div>
         </div>
-        <p class="text-xs text-success mt-2 font-medium">+12 this week</p>
+        <p class="text-xs text-success mt-2 font-medium">+12 this month</p>
       </div>
 
       <div class="bg-white rounded-lg shadow p-4 border-l-4 border-success stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">System Uptime</p>
-            <p class="text-2xl font-bold mt-1">99.97%</p>
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Total Asset Value</p>
+            <p class="text-2xl font-bold mt-1">₱45.8M</p>
           </div>
           <div class="p-2 bg-success-light rounded-lg">
             <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">Last month</p>
+        <p class="text-xs text-gray-500 mt-2">Net book value</p>
       </div>
 
       <div class="bg-white rounded-lg shadow p-4 border-l-4 border-warning stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Pending Approvals</p>
-            <p class="text-2xl font-bold mt-1">23</p>
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Under Maintenance</p>
+            <p class="text-2xl font-bold mt-1">47</p>
           </div>
           <div class="p-2 bg-warning-light rounded-lg">
             <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
             </svg>
           </div>
         </div>
-        <p class="text-xs text-warning mt-2 font-medium">3 critical</p>
+        <p class="text-xs text-warning mt-2 font-medium">8 critical</p>
       </div>
 
       <div class="bg-white rounded-lg shadow p-4 border-l-4 border-danger stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Security Alerts</p>
-            <p class="text-2xl font-bold mt-1">5</p>
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Depreciation</p>
+            <p class="text-2xl font-bold mt-1">₱2.3M</p>
           </div>
           <div class="p-2 bg-danger-light rounded-lg">
             <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
             </svg>
           </div>
         </div>
-        <p class="text-xs text-danger mt-2 font-medium">2 critical</p>
+        <p class="text-xs text-danger mt-2 font-medium">This quarter</p>
       </div>
     </div>
 
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
-      <!-- System Activity Chart -->
+      <!-- Asset Value Trend -->
       <div class="bg-white rounded-lg shadow p-5 lg:col-span-2">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5">
           <div>
-            <h3 class="font-semibold text-gray-900 text-base">System Activity</h3>
-            <p class="text-sm text-gray-500">Daily metrics overview</p>
+            <h3 class="font-semibold text-gray-900 text-base">Asset Value Trend</h3>
+            <p class="text-sm text-gray-500">Acquisition vs Current book value</p>
           </div>
           <select class="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white mt-2 sm:mt-0">
-            <option>Last 7 days</option>
-            <option selected>Last 30 days</option>
-            <option>Last quarter</option>
+            <option>Last 6 months</option>
+            <option selected>Year to date</option>
+            <option>Last 2 years</option>
           </select>
         </div>
         <div class="chart-container">
-          <canvas id="activityChart"></canvas>
+          <canvas id="assetValueChart"></canvas>
         </div>
         <div class="flex items-center justify-center gap-4 mt-4 text-xs">
           <div class="flex items-center gap-1.5">
-            <div class="w-3 h-3 rounded-full bg-accent"></div>
-            <span class="text-gray-600">User Logins</span>
+            <div class="w-3 h-3 rounded-full bg-asset-blue"></div>
+            <span class="text-gray-600">Acquisition Value</span>
           </div>
           <div class="flex items-center gap-1.5">
             <div class="w-3 h-3 rounded-full bg-success"></div>
-            <span class="text-gray-600">Transactions</span>
+            <span class="text-gray-600">Current Book Value</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <div class="w-3 h-3 rounded-full bg-warning"></div>
-            <span class="text-gray-600">Audit Events</span>
+            <div class="w-3 h-3 rounded-full bg-accent"></div>
+            <span class="text-gray-600">Accumulated Depreciation</span>
           </div>
         </div>
       </div>
 
-      <!-- Data Storage Chart -->
+      <!-- Asset Category Distribution -->
       <div class="bg-white rounded-lg shadow p-5">
-        <h3 class="font-semibold text-gray-900 text-base mb-5">Data Storage</h3>
+        <h3 class="font-semibold text-gray-900 text-base mb-5">Asset Category Distribution</h3>
         <div class="chart-container">
-          <canvas id="storageChart"></canvas>
+          <canvas id="assetCategoryChart"></canvas>
         </div>
         <div class="mt-4 space-y-3">
           <div>
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-gray-600">Financial Data</span>
-              <span class="font-medium">78%</span>
+              <span class="text-gray-600">IT Equipment</span>
+              <span class="font-medium">38%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-1.5">
-              <div class="bg-accent h-1.5 rounded-full" style="width: 78%"></div>
+              <div class="bg-accent h-1.5 rounded-full" style="width: 38%"></div>
             </div>
           </div>
           <div>
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-gray-600">User Logs</span>
-              <span class="font-medium">45%</span>
+              <span class="text-gray-600">Office Furniture</span>
+              <span class="font-medium">24%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-1.5">
-              <div class="bg-warning h-1.5 rounded-full" style="width: 45%"></div>
+              <div class="bg-warning h-1.5 rounded-full" style="width: 24%"></div>
             </div>
           </div>
           <div>
             <div class="flex justify-between text-xs mb-1">
-              <span class="text-gray-600">Audit Trails</span>
-              <span class="font-medium">32%</span>
+              <span class="text-gray-600">Vehicles</span>
+              <span class="font-medium">18%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-1.5">
-              <div class="bg-success h-1.5 rounded-full" style="width: 32%"></div>
+              <div class="bg-success h-1.5 rounded-full" style="width: 18%"></div>
             </div>
           </div>
         </div>
-        <p class="text-xs text-gray-500 mt-4 text-center">Total: 2.4TB of 4TB used</p>
+        <p class="text-xs text-gray-500 mt-4 text-center">Total Categories: 12</p>
       </div>
     </div>
 
-    <!-- Recent Activities & System Health -->
+    <!-- Recent Activities & Asset Status -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       
-      <!-- Recent Activities -->
+      <!-- Recent Asset Movements -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-5 border-b border-gray-200">
-          <h3 class="font-semibold text-gray-900 text-base">Recent Activities</h3>
-          <p class="text-sm text-gray-500">Last 24 hours</p>
+          <h3 class="font-semibold text-gray-900 text-base">Recent Asset Movements</h3>
+          <p class="text-sm text-gray-500">Latest asset transfers and disposals</p>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full min-w-full">
             <thead class="bg-gray-50">
               <tr>
-                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
-                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
-                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Time</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Asset</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Movement</th>
+                <th class="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr>
                 <td class="py-3 px-4">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full bg-accent-light flex items-center justify-center text-xs font-medium text-accent">JS</div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">John Smith</p>
-                      <p class="text-xs text-gray-500">Finance Manager</p>
-                    </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Laptop Dell XPS 15</p>
+                    <p class="text-xs text-gray-500">Serial: DLX-78945-AB</p>
                   </div>
                 </td>
-                <td class="py-3 px-4 text-sm text-gray-700">Budget Approval</td>
                 <td class="py-3 px-4">
-                  <span class="text-xs text-gray-500">10:24 AM</span>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Transfer to Marketing</p>
+                    <p class="text-xs text-gray-500">From: IT Department</p>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-1 text-xs bg-accent-light text-accent rounded-full">Completed</span>
                 </td>
               </tr>
               <tr>
                 <td class="py-3 px-4">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full bg-success-light flex items-center justify-center text-xs font-medium text-success">SJ</div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">Sarah Johnson</p>
-                      <p class="text-xs text-gray-500">Auditor</p>
-                    </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Projector Epson EB-</p>
+                    <p class="text-xs text-gray-500">Asset ID: PRJ-2023-045</p>
                   </div>
                 </td>
-                <td class="py-3 px-4 text-sm text-gray-700">Report Generation</td>
                 <td class="py-3 px-4">
-                  <span class="text-xs text-gray-500">09:45 AM</span>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Maintenance Request</p>
+                    <p class="text-xs text-gray-500">Location: Conference Room A</p>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-1 text-xs bg-warning-light text-warning rounded-full">Pending</span>
                 </td>
               </tr>
               <tr>
                 <td class="py-3 px-4">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full bg-warning-light flex items-center justify-center text-xs font-medium text-warning">MR</div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">Mike Rodriguez</p>
-                      <p class="text-xs text-gray-500">Admin</p>
-                    </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Server Rack HP DL380</p>
+                    <p class="text-xs text-gray-500">Serial: HP-SRV-78234</p>
                   </div>
                 </td>
-                <td class="py-3 px-4 text-sm text-gray-700">User Management</td>
                 <td class="py-3 px-4">
-                  <span class="text-xs text-gray-500">08:30 AM</span>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">Disposal Approved</p>
+                    <p class="text-xs text-gray-500">End of life cycle</p>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-1 text-xs bg-success-light text-success rounded-full">Approved</span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="p-4 border-t border-gray-200 text-center">
-          <a href="#" class="text-sm text-accent font-medium hover:text-blue-700 transition-smooth">View All Activities →</a>
+          <a href="#" class="text-sm text-accent font-medium hover:text-purple-700 transition-smooth">View All Asset Movements →</a>
         </div>
       </div>
 
-      <!-- System Health -->
+      <!-- Maintenance & Service Tasks -->
       <div class="bg-white rounded-lg shadow p-5">
-        <h3 class="font-semibold text-gray-900 text-base mb-4">System Health</h3>
+        <h3 class="font-semibold text-gray-900 text-base mb-4">Maintenance Schedule</h3>
         <div class="space-y-3">
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-smooth">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-gray-900">Database</p>
-                <p class="text-xs text-gray-500">Connection stable</p>
-              </div>
-            </div>
-            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded">Healthy</span>
-          </div>
-          
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-smooth">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-gray-900">Backup Service</p>
-                <p class="text-xs text-gray-500">Scheduled in 2 hours</p>
-              </div>
-            </div>
-            <span class="text-xs font-medium text-yellow-600 bg-yellow-100 px-2 py-1 rounded">Pending</span>
-          </div>
-          
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-smooth">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-8 h-8 bg-danger-light rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-medium text-gray-900">Security Logs</p>
-                <p class="text-xs text-gray-500">2 critical alerts</p>
+                <p class="text-sm font-medium text-gray-900">Vehicle Fleet Inspection</p>
+                <p class="text-xs text-gray-500">Company vehicles - 15 units</p>
               </div>
             </div>
-            <span class="text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded">Attention</span>
+            <span class="text-xs font-medium text-danger bg-danger-light px-2 py-1 rounded">Overdue</span>
+          </div>
+          
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-smooth">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-warning-light rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Server Room AC Service</p>
+                <p class="text-xs text-gray-500">Preventive maintenance</p>
+              </div>
+            </div>
+            <span class="text-xs font-medium text-warning bg-warning-light px-2 py-1 rounded">Due Today</span>
+          </div>
+          
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-smooth">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-accent-light rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Fire Extinguisher Check</p>
+                <p class="text-xs text-gray-500">All floors - 48 units</p>
+              </div>
+            </div>
+            <span class="text-xs font-medium text-accent bg-accent-light px-2 py-1 rounded">3 days</span>
           </div>
         </div>
         
-        <!-- Quick Stats -->
+        <!-- Asset Quick Actions -->
         <div class="mt-6 pt-5 border-t border-gray-200">
-          <h4 class="text-sm font-semibold text-gray-900 mb-3">Quick Stats</h4>
+          <h4 class="text-sm font-semibold text-gray-900 mb-3">Quick Asset Actions</h4>
           <div class="grid grid-cols-2 gap-3">
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-xs text-gray-500">API Calls Today</p>
-              <p class="text-lg font-bold">2,847</p>
+            <a href="#" class="bg-accent text-white p-3 rounded-lg text-center hover:bg-purple-700 transition-smooth">
+              <p class="text-xs font-medium">Register New Asset</p>
+            </a>
+            <a href="#" class="bg-gray-100 text-gray-700 p-3 rounded-lg text-center hover:bg-gray-200 transition-smooth">
+              <p class="text-xs font-medium">Schedule Maintenance</p>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Asset Status Summary -->
+        <div class="mt-6 pt-5 border-t border-gray-200">
+          <h4 class="text-sm font-semibold text-gray-900 mb-3">Asset Status Summary</h4>
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <div class="bg-green-50 p-2 rounded">
+              <p class="text-lg font-bold text-green-600">924</p>
+              <p class="text-xs text-gray-600">Active</p>
             </div>
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-xs text-gray-500">Avg Response Time</p>
-              <p class="text-lg font-bold">142ms</p>
+            <div class="bg-yellow-50 p-2 rounded">
+              <p class="text-lg font-bold text-yellow-600">47</p>
+              <p class="text-xs text-gray-600">Maintenance</p>
+            </div>
+            <div class="bg-blue-50 p-2 rounded">
+              <p class="text-lg font-bold text-blue-600">185</p>
+              <p class="text-xs text-gray-600">Idle</p>
+            </div>
+            <div class="bg-gray-100 p-2 rounded">
+              <p class="text-lg font-bold text-gray-600">92</p>
+              <p class="text-xs text-gray-600">Retired</p>
             </div>
           </div>
         </div>
@@ -617,36 +661,34 @@ session_start();
 <footer class="bg-white border-t py-3">
   <div class="px-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
     <div class="mb-2 sm:mb-0">
-      <span>© 2025 BCP Financial Management System v3.2.1</span>
+      <span>© 2025 Asset Management System v2.5.1</span>
       <span class="mx-2 hidden sm:inline">•</span>
-      <span class="block sm:inline mt-1 sm:mt-0 text-success font-medium">Uptime: 99.97%</span>
+      <span class="block sm:inline mt-1 sm:mt-0 text-success font-medium">Last Audit: May 2024 | Next Audit: Nov 2024</span>
     </div>
     <div class="flex items-center gap-3">
-      <a href="#" class="hover:text-accent transition-smooth">Support</a>
-      <a href="#" class="hover:text-accent transition-smooth">Privacy</a>
-      <button class="text-danger hover:text-red-700 font-medium text-xs" onclick="confirm('Initiate system maintenance?')">
-        Maintenance
-      </button>
+      <a href="#" class="hover:text-accent transition-smooth">Depreciation Schedule</a>
+      <a href="#" class="hover:text-accent transition-smooth">Insurance Policies</a>
+      <a href="#" class="hover:text-accent transition-smooth">Asset Manual</a>
     </div>
   </div>
 </footer>
 
 <!-- JavaScript -->
 <script>
-  // System Activity Chart
-  const activityCtx = document.getElementById('activityChart').getContext('2d');
-  const activityChart = new Chart(activityCtx, {
+  // Asset Value Chart
+  const assetValueCtx = document.getElementById('assetValueChart').getContext('2d');
+  const assetValueChart = new Chart(assetValueCtx, {
     type: 'line',
     data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
       datasets: [
         {
-          label: 'User Logins',
-          data: [850, 900, 920, 870, 950, 700, 600],
-          borderColor: '#2563EB',
+          label: 'Acquisition Value',
+          data: [42000, 45000, 46000, 48000, 50000, 52000],
+          borderColor: '#0EA5E9',
           backgroundColor: 'transparent',
           borderWidth: 2,
-          pointBackgroundColor: '#2563EB',
+          pointBackgroundColor: '#0EA5E9',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           pointRadius: 4,
@@ -654,12 +696,25 @@ session_start();
           tension: 0.3
         },
         {
-          label: 'Transactions',
-          data: [320, 380, 350, 400, 420, 300, 280],
+          label: 'Current Book Value',
+          data: [40000, 42000, 41000, 43000, 44000, 45000],
           borderColor: '#22C55E',
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointBackgroundColor: '#22C55E',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.3
+        },
+        {
+          label: 'Accumulated Depreciation',
+          data: [2000, 3000, 5000, 7000, 8000, 9000],
+          borderColor: '#7C3AED',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointBackgroundColor: '#7C3AED',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           pointRadius: 4,
@@ -679,15 +734,20 @@ session_start();
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
           titleColor: '#ffffff',
           bodyColor: '#ffffff',
-          borderColor: '#2563EB',
+          borderColor: '#7C3AED',
           borderWidth: 1,
           cornerRadius: 4,
-          displayColors: false
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ₱' + context.parsed.y + 'K';
+            }
+          }
         }
       },
       scales: {
         y: {
-          beginAtZero: true,
+          beginAtZero: false,
           grid: {
             color: 'rgba(0, 0, 0, 0.05)',
             drawBorder: false
@@ -697,7 +757,10 @@ session_start();
             font: {
               size: 11
             },
-            padding: 8
+            padding: 8,
+            callback: function(value) {
+              return '₱' + value + 'K';
+            }
           }
         },
         x: {
@@ -724,15 +787,15 @@ session_start();
     }
   });
 
-  // Data Storage Chart (Doughnut)
-  const storageCtx = document.getElementById('storageChart').getContext('2d');
-  const storageChart = new Chart(storageCtx, {
+  // Asset Category Chart (Doughnut)
+  const assetCategoryCtx = document.getElementById('assetCategoryChart').getContext('2d');
+  const assetCategoryChart = new Chart(assetCategoryCtx, {
     type: 'doughnut',
     data: {
-      labels: ['Financial Data', 'User Logs', 'Audit Trails', 'Available'],
+      labels: ['IT Equipment', 'Office Furniture', 'Vehicles', 'Machinery', 'Buildings', 'Other'],
       datasets: [{
-        data: [40, 23, 17, 20],
-        backgroundColor: ['#2563EB', '#F59E0B', '#22C55E', '#E5E7EB'],
+        data: [38, 24, 18, 10, 6, 4],
+        backgroundColor: ['#7C3AED', '#F59E0B', '#22C55E', '#EF4444', '#0EA5E9', '#6B7280'],
         borderColor: '#ffffff',
         borderWidth: 2,
         hoverBorderWidth: 3
@@ -750,9 +813,14 @@ session_start();
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
           titleColor: '#ffffff',
           bodyColor: '#ffffff',
-          borderColor: '#2563EB',
+          borderColor: '#7C3AED',
           borderWidth: 1,
-          cornerRadius: 4
+          cornerRadius: 4,
+          callbacks: {
+            label: function(context) {
+              return context.label + ': ' + context.parsed + '%';
+            }
+          }
         }
       }
     }
@@ -810,8 +878,8 @@ session_start();
 
   // Update charts on window resize
   window.addEventListener('resize', function() {
-    activityChart.resize();
-    storageChart.resize();
+    assetValueChart.resize();
+    assetCategoryChart.resize();
   });
 </script>
 
