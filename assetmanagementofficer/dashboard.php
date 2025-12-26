@@ -1,11 +1,16 @@
 <?php
 session_start();
-// Add authentication check here
-// if (!isset($_SESSION['asset_officer'])) {
-//     header('Location: login.php');
-//     exit();
-// }
+$allowed_role = 'Asset Management Officer';
+$allowed_level = 4;
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {header("Location: ../login.php?error=unauthorized");exit();}
+if ($_SESSION['role'] !== $allowed_role) {header("Location: ../login.php?error=unauthorized");exit();}
+if ($_SESSION['level'] !== $allowed_level) {header("Location: ../login.php?error=unauthorized");exit();}
+$firstname = $_SESSION['firstname'];
+$middlename = $_SESSION['middlename'];
+$lastname = $_SESSION['lastname'];
+$role = $_SESSION['role'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
