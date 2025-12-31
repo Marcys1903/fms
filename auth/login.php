@@ -112,7 +112,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif;
+               background-image:url('../assets/bcplp.jpg');
+               background-size:cover;
+               background-position: center;
+               background-repeat: no-repeat;
+
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -148,13 +154,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <button type="submit"
-                class="w-full bg-accent text-white py-2.5 rounded-lg font-semibold hover:bg-green-700 transition">
+                class="w-full bg-info text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition">
             Login
         </button>
     </form>
 
     <div class="text-center mt-6">
-        <a href="forgotpassword.php" class="text-sm text-accent hover:underline">Forgot Password?</a>
+        <a href="forgotpassword.php" class="text-sm text-primary hover:underline">Forgot Password?</a>
     </div>
 </div>
 

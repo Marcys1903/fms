@@ -17,30 +17,25 @@ $role = $_SESSION['role'];
   <meta charset="UTF-8">
   <title>Cashier Dashboard | Financial Management System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="../assets/bcpnobg.png">
-  
-  <!-- CDN Links -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="//unpkg.com/alpinejs" defer></script>
 
-  <!-- Tailwind Configuration -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: '#1E293B',
-            accent: '#9333EA', // Purple for cash/transactions
+            accent: '#9333EA', 
             success: '#16A34A',
             danger: '#EF4444',
             warning: '#D97706',
             info: '#2563EB',
-            navbar: '#7C3AED', // Purple for navbar
+            navbar: '#7C3AED', 
             sidebar: '#1E293B',
-            'accent-light': '#F3E8FF', // Light purple
+            'accent-light': '#F3E8FF', 
             'success-light': '#DCFCE7',
             'danger-light': '#FEE2E2',
             'warning-light': '#FEF3C7',
@@ -89,7 +84,6 @@ $role = $_SESSION['role'];
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
     
-    /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -108,24 +102,20 @@ $role = $_SESSION['role'];
       background: #a1a1a1;
     }
     
-    /* Table styles */
     .table-striped tbody tr:nth-child(odd) {
       background-color: #f9fafb;
     }
     
-    /* Chart container */
     .chart-container {
       position: relative;
       height: 280px;
       width: 100%;
     }
     
-    /* Smooth transitions */
     .transition-smooth {
       transition: all 0.3s ease;
     }
     
-    /* Dropdown animations */
     .dropdown {
       opacity: 0;
       visibility: hidden;
@@ -160,13 +150,10 @@ $role = $_SESSION['role'];
       background-color: #f9fafb;
     }
     
-    /* Payment method indicators */
     .payment-cash { background-color: #DCFCE7; color: #059669; }
     .payment-card { background-color: #DBEAFE; color: #2563EB; }
     .payment-online { background-color: #F3E8FF; color: #9333EA; }
     .payment-check { background-color: #FEF3C7; color: #D97706; }
-    
-    /* Cash drawer status */
     .drawer-open { 
       background-color: #DCFCE7; 
       color: #059669;
@@ -181,8 +168,6 @@ $role = $_SESSION['role'];
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden font-inter">
-
-<!-- Header -->
 <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-30 border-b border-gray-200">
   <div class="flex items-center gap-3">
     <div class="flex items-center gap-2">

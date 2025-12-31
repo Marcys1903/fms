@@ -1,14 +1,12 @@
 <?php
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'financial_system');
-define('DB_USER', '');
-define('DB_PASS', '');
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "financial_system";
 
-$connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$conn = mysqli_connect($host, $user, $password, $database);
 
-if ($connection->connect_error) {
-    die('Database connection failed');
+if (!$conn) {
+    die("Database connection failed");
 }
-
-date_default_timezone_set('Asia/Manila');
