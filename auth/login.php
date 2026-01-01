@@ -6,75 +6,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
+    // Check if username exists
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-
-        $role = strtolower(str_replace(' ', '', $user['role']));
-
-        switch ($role) {
-            case 'superadmin':
-                $_SESSION['level'] = 1;
-                header("Location: superadmin/dashboard.php");
-                exit();
-            case 'financialdirector':
-                $_SESSION['level'] = 2;
-                header("Location: financialdirector/dashboard.php");
-                exit();
-            case 'budgetofficer':
-                $_SESSION['level'] = 3;
-                header("Location: budgetofficer/dashboard.php");
-                exit();
-            case 'treasurer':
-                $_SESSION['level'] = 3;
-                header("Location: treasurer/dashboard.php");
-                exit();
-            case 'accountingofficer':
-            case 'cashier':
-                $_SESSION['level'] = 3;
-                header("Location: cashier/dashboard.php");
-                exit();
-            case 'departmenthead':
-                $_SESSION['level'] = 4;
-                header("Location: departmenthead/dashboard.php");
-                exit();
-            case 'procurementofficer':
-                $_SESSION['level'] = 4;
-                header("Location: procurementofficer/dashboard.php");
-                exit();
-            case 'assetmanagementofficer':
-                $_SESSION['level'] = 4;
-                header("Location: assetmanagementofficer/dashboard.php");
-                exit();
-            case 'auditor':
-                $_SESSION['level'] = 5;
-                header("Location: auditor/dashboard.php");
-                exit();
-            case 'complianceofficer':
-                $_SESSION['level'] = 5;
-                header("Location: complianceofficer/dashboard.php");
-                exit();
-            case 'students':
-            case 'enduser':
-            case 'staff':
-                $_SESSION['level'] = 6;
-                header("Location: students/dashboard.php");
-                exit();
-            default:
-                session_destroy();
-                header("Location: login.php?error=unauthorized");
-                exit();
-        }
-
-    } else {
+    if (!$user) {
         header("Location: login.php?error=invalid");
         exit();
     }
+
+    // Verify password - using password_verify for hashed passwords
+    if (!password_verify($password, $user['password'])) {
+        header("Location: login.php?error=invalid");
+        exit();
+    }
+
+    // Set session variables - align with your database column names
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'];
+    $_SESSION['level'] = $user['level'];
+    
+    // Check which name columns your database has
+    // If your database has 'firstname', 'middlename', 'lastname'
+    $_SESSION['firstname'] = $user['firstname'] ?? '';
+    $_SESSION['middlename'] = $user['middlename'] ?? '';
+    $_SESSION['lastname'] = $user['lastname'] ?? '';
+    
+    // OR if your database has 'first_name', 'middle_name', 'last_name'
+    // $_SESSION['firstname'] = $user['first_name'] ?? '';
+    // $_SESSION['middlename'] = $user['middle_name'] ?? '';
+    // $_SESSION['lastname'] = $user['last_name'] ?? '';
+
+    $roleKey = strtolower(str_replace(' ', '', $user['role']));
+
+    $roleRoutes = [
+        'superadministrator' => '../superadmin/dashboard.php',
+        'admin'               => '../admin/dashboard.php',
+        'auditor'             => '../auditor/dashboard.php',
+        'securityauditor'     => '../auditor/dashboard.php',
+        'financemanager'      => '../finance/dashboard.php',
+        'procurementofficer'  => '../procurement/dashboard.php',
+        'accountspayable'     => '../accounting/dashboard.php',
+        'assetmanager'        => '../assets/dashboard.php',
+        'complianceofficer'   => '../compliance/dashboard.php'
+    ];
+
+    if (!isset($roleRoutes[$roleKey])) {
+        session_destroy();
+        header("Location: login.php?error=unauthorized");
+        exit();
+    }
+
+    header("Location: " . $roleRoutes[$roleKey]);
+    exit();
 }
 ?>
 

@@ -1,23 +1,27 @@
 <?php
 session_start();
 
-// Clear all session variables
-$_SESSION = array();
+$roleRedirects = [
+    'superadministrator' => '../auth/login.php',
+    'admin' => '../auth/login.php',
+    'auditor' => '../auth/login.php',
+    'securityauditor' => '../auth/login.php',
+    'financemanager' => '../auth/login.php',
+    'procurementofficer' => '../auth/login.php',
+    'accountspayable' => '../auth/login.php',
+    'assetmanager' => '../auth/login.php',
+    'complianceofficer' => '../auth/login.php'
+];
 
-// Destroy the session
+$redirect = '../auth/login.php';
+
+if (isset($_SESSION['role']) && isset($roleRedirects[$_SESSION['role']])) {
+    $redirect = $roleRedirects[$_SESSION['role']];
+}
+
+$_SESSION = [];
+session_unset();
 session_destroy();
 
-// Clear session cookie
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time() - 3600, '/');
-}
-
-// Clear remember me cookie
-if (isset($_COOKIE['remember_token'])) {
-    setcookie('remember_token', '', time() - 3600, '/');
-}
-
-// Redirect to login page
-header("Location: login.php");
-exit();
-?>
+header("Location: $redirect");
+exit;

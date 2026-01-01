@@ -1,12 +1,14 @@
 <?php
+$host = 'localhost';
+$dbname = 'financial_system';
+$username = 'root'; 
+$password = ''; 
 
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "financial_system";
-
-$conn = mysqli_connect($host, $user, $password, $database);
-
-if (!$conn) {
-    die("Database connection failed");
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
+?>

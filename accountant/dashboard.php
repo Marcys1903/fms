@@ -33,14 +33,14 @@ $role = $_SESSION['role'];
         extend: {
           colors: {
             primary: '#1E293B',
-            accent: '#059669', // Changed to accounting green
+            accent: '#059669', 
             success: '#22C55E',
             danger: '#EF4444',
             warning: '#F59E0B',
             info: '#3B82F6',
-            navbar: '#047857', // Darker green for navbar
+            navbar: '#047857', 
             sidebar: '#1E293B',
-            'accent-light': '#D1FAE5', // Light green
+            'accent-light': '#D1FAE5', 
             'success-light': '#DCFCE7',
             'danger-light': '#FEE2E2',
             'warning-light': '#FEF3C7',

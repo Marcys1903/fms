@@ -1,16 +1,43 @@
 <?php
 session_start();
-$allowed_role = 'Super Administrator';
-$allowed_level = 1;
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {header("Location: ../login.php?error=unauthorized");exit();}
-if ($_SESSION['role'] !== $allowed_role) {header("Location: ../login.php?error=unauthorized");exit();}
-if ($_SESSION['level'] !== $allowed_level) {header("Location: ../login.php?error=unauthorized");exit();}
-$firstname = $_SESSION['firstname'];
-$middlename = $_SESSION['middlename'];
-$lastname = $_SESSION['lastname'];
+// Use your actual database values instead of hardcoding
+require_once '../config/config.php';
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+    header("Location: ../login.php?error=unauthorized");
+    exit();
+}
+
+// Get actual allowed role and level from database
+try {
+    $stmt = $pdo->prepare("SELECT role, level FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    
+    if (!$user) {
+        header("Location: ../login.php?error=unauthorized");
+        exit();
+    }
+    
+    // Now check if this user is actually a super admin
+    $allowed_role = 'Super Administrator';
+    $allowed_level = 1;
+    
+    if ($user['role'] !== $allowed_role || $user['level'] != $allowed_level) {
+        header("Location: ../login.php?error=unauthorized");
+        exit();
+    }
+} catch (Exception $e) {
+    header("Location: ../login.php?error=unauthorized");
+    exit();
+}
+
+// Now we can safely use the session variables
+$firstname = $_SESSION['firstname'] ?? '';
+$middlename = $_SESSION['middlename'] ?? '';
+$lastname = $_SESSION['lastname'] ?? '';
 $role = $_SESSION['role'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -283,11 +310,11 @@ $role = $_SESSION['role'];
     <div class="dropdown-container relative">
       <div class="flex items-center gap-3 border-l border-gray-200 pl-4 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-smooth">
         <div class="text-right">
-          <p class="font-medium text-gray-900 text-sm">Super Administrator</p>
-          <p class="text-xs text-gray-500">System Owner</p>
+          <p class="font-medium text-gray-900 text-sm"><?php echo htmlspecialchars($firstname . ' ' . $lastname); ?></p>
+          <p class="text-xs text-gray-500"><?php echo htmlspecialchars($role); ?></p>
         </div>
         <div class="relative">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="h-9 w-9 rounded-full border-2 border-accent">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=<?php echo urlencode($firstname); ?>" class="h-9 w-9 rounded-full border-2 border-accent">
           <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
         </div>
       </div>
@@ -318,7 +345,7 @@ $role = $_SESSION['role'];
         </a>
         
         <div class="border-t border-gray-100 pt-2">
-          <a href="auth/logout.php" class="flex items-center gap-3 px-4 py-3 hover:bg-danger/10 text-danger transition-smooth">
+          <a href="../auth/logout.php" class="flex items-center gap-3 px-4 py-3 hover:bg-danger/10 text-danger transition-smooth">
             <div class="w-5 h-5">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
