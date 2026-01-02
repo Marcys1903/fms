@@ -10,7 +10,7 @@
       </div>
       <div>
         <h2 class="text-lg font-bold">Financial Management</h2>
-        <p class="text-xs text-gray-400">Super Admin Panel</p>
+        <p class="text-xs text-gray-400">Accountant</p>
       </div>
     </div>
     <div class="text-xs text-gray-400 bg-gray-800/50 rounded-lg px-3 py-2">

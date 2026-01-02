@@ -6,8 +6,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    // Check if username exists
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    // NOW CORRECT: status column exists
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND status = 'active'");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
@@ -16,49 +16,128 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Verify password - using password_verify for hashed passwords
+    // Verify password
     if (!password_verify($password, $user['password'])) {
         header("Location: login.php?error=invalid");
         exit();
     }
 
-    // Set session variables - align with your database column names
+    // Set session variables - ALL COLUMNS NOW EXIST
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['role'] = $user['role'];
     $_SESSION['level'] = $user['level'];
-    
-    // Check which name columns your database has
-    // If your database has 'firstname', 'middlename', 'lastname'
     $_SESSION['firstname'] = $user['firstname'] ?? '';
     $_SESSION['middlename'] = $user['middlename'] ?? '';
     $_SESSION['lastname'] = $user['lastname'] ?? '';
+    $_SESSION['email'] = $user['email'] ?? '';
+    $_SESSION['department'] = $user['department'] ?? '';
     
-    // OR if your database has 'first_name', 'middle_name', 'last_name'
-    // $_SESSION['firstname'] = $user['first_name'] ?? '';
-    // $_SESSION['middlename'] = $user['middle_name'] ?? '';
-    // $_SESSION['lastname'] = $user['last_name'] ?? '';
-
+    // Convert role to lowercase and remove spaces for the key
     $roleKey = strtolower(str_replace(' ', '', $user['role']));
 
+    // Role-Based Routing - PERFECTLY MATCHES DATABASE
     $roleRoutes = [
+        // LEVEL 1: System Core
         'superadministrator' => '../superadmin/dashboard.php',
-        'admin'               => '../admin/dashboard.php',
-        'auditor'             => '../auditor/dashboard.php',
-        'securityauditor'     => '../auditor/dashboard.php',
-        'financemanager'      => '../finance/dashboard.php',
-        'procurementofficer'  => '../procurement/dashboard.php',
-        'accountspayable'     => '../accounting/dashboard.php',
-        'assetmanager'        => '../assets/dashboard.php',
-        'complianceofficer'   => '../compliance/dashboard.php'
+        'superadmin' => '../superadmin/dashboard.php',
+        
+        'itsystemadministrator' => '../admin/dashboard.php',
+        
+        // LEVEL 2: Financial Oversight
+        'financialdirector' => '../financialdirector/dashboard.php',
+        
+        // LEVEL 3: Operational Management
+        'budgetofficer' => '../budgetofficer/dashboard.php',
+        
+        'accountingofficer' => '../accountant/dashboard.php',
+        'accountant' => '../accountant/dashboard.php',
+        
+        'treasurer' => '../treasurer/dashboard.php',
+        
+        'procurementofficer' => '../procurementofficer/dashboard.php',
+        
+        'assetmanagementofficer' => '../assetmanagementofficer/dashboard.php',
+        
+        // LEVEL 5: Monitoring & Verification
+        'auditor' => '../auditor/dashboard.php',
+        
+        'auditingandcomplianceofficer' => '../complianceofficer/dashboard.php',
+        'complianceofficer' => '../complianceofficer/dashboard.php',
+        
+        // LEVEL 4: Departmental Operations
+        'departmenthead' => '../departmenthead/dashboard.php',
+        
+        // LEVEL 6: Requestors / Staff
+        'cashier' => '../cashier/dashboard.php',
+        
+        'end-user' => '../students/dashboard.php',
+        'staff' => '../students/dashboard.php'
     ];
 
+    // Check if role exists in routing table
     if (!isset($roleRoutes[$roleKey])) {
-        session_destroy();
-        header("Location: login.php?error=unauthorized");
+        // If role not found, use level-based fallback
+        $userLevel = $user['level'] ?? 6;
+        
+        // PERFECT level mapping
+        switch($userLevel) {
+            case 1: // System Core
+                if (strpos(strtolower($user['role']), 'super') !== false) {
+                    header("Location: ../superadmin/dashboard.php");
+                } else {
+                    header("Location: ../admin/dashboard.php");
+                }
+                break;
+                
+            case 2: // Financial Oversight
+                header("Location: ../financialdirector/dashboard.php");
+                break;
+                
+            case 3: // Operational Management
+                $roleLower = strtolower($user['role']);
+                if (strpos($roleLower, 'budget') !== false) {
+                    header("Location: ../budgetofficer/dashboard.php");
+                } elseif (strpos($roleLower, 'account') !== false) {
+                    header("Location: ../accountant/dashboard.php");
+                } elseif (strpos($roleLower, 'treasurer') !== false) {
+                    header("Location: ../treasurer/dashboard.php");
+                } elseif (strpos($roleLower, 'procure') !== false) {
+                    header("Location: ../procurementofficer/dashboard.php");
+                } elseif (strpos($roleLower, 'asset') !== false) {
+                    header("Location: ../assetmanagementofficer/dashboard.php");
+                } else {
+                    header("Location: ../accountant/dashboard.php");
+                }
+                break;
+                
+            case 4: // Departmental Operations
+                header("Location: ../departmenthead/dashboard.php");
+                break;
+                
+            case 5: // Monitoring & Verification
+                $roleLower = strtolower($user['role']);
+                if (strpos($roleLower, 'audit') !== false) {
+                    header("Location: ../auditor/dashboard.php");
+                } else {
+                    header("Location: ../complianceofficer/dashboard.php");
+                }
+                break;
+                
+            case 6: // Requestors / Staff
+            default:
+                $roleLower = strtolower($user['role']);
+                if (strpos($roleLower, 'cashier') !== false) {
+                    header("Location: ../cashier/dashboard.php");
+                } else {
+                    header("Location: ../students/dashboard.php");
+                }
+                break;
+        }
         exit();
     }
 
+    // Redirect to specific role dashboard
     header("Location: " . $roleRoutes[$roleKey]);
     exit();
 }
@@ -98,12 +177,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif;
-               background-image:url('../assets/bcplp.jpg');
-               background-size:cover;
-               background-position: center;
-               background-repeat: no-repeat;
-
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-image:url('../assets/bcplp.jpg');
+            background-size:cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
     </style>
 </head>

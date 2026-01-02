@@ -132,15 +132,28 @@ $role = $_SESSION['role'];
       transition: all 0.3s ease;
     }
     
-    /* Dropdown animations */
-    .dropdown {
+    /* Dropdown animations - CSS Only Solution */
+    .financial-alerts-dropdown {
       opacity: 0;
       visibility: hidden;
       transform: translateY(-10px);
       transition: all 0.2s ease;
     }
     
-    .dropdown-container:hover .dropdown {
+    .financial-alerts-container:hover .financial-alerts-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .user-dropdown {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+    }
+    
+    .user-profile-container:hover .user-dropdown {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
@@ -209,7 +222,7 @@ $role = $_SESSION['role'];
     </div>
     
     <!-- Financial Alerts -->
-    <div class="relative">
+    <div class="financial-alerts-container relative">
       <button class="p-2 rounded-full hover:bg-gray-100 relative">
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -218,7 +231,7 @@ $role = $_SESSION['role'];
       </button>
       
       <!-- Financial Alerts Dropdown -->
-      <div class="dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
+      <div class="financial-alerts-dropdown absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
         <div class="px-4 py-3 border-b border-gray-100">
           <div class="flex items-center justify-between">
             <h3 class="font-semibold text-gray-900 text-sm">Financial Alerts</h3>
@@ -282,7 +295,7 @@ $role = $_SESSION['role'];
     </div>
     
     <!-- User Profile -->
-    <div class="dropdown-container relative">
+    <div class="user-profile-container relative">
       <div class="flex items-center gap-3 border-l border-gray-200 pl-4 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-smooth">
         <div class="text-right">
           <p class="font-medium text-gray-900 text-sm">Maria Santos</p>
@@ -295,7 +308,7 @@ $role = $_SESSION['role'];
       </div>
       
       <!-- Financial Director Menu -->
-      <div class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
+      <div class="user-dropdown absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-40">
         <div class="px-4 py-2 border-b border-gray-100">
           <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Financial Management</p>
         </div>
@@ -312,7 +325,7 @@ $role = $_SESSION['role'];
         <a href="#" class="dropdown-item flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-smooth">
           <div class="w-5 h-5 text-gray-500">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 01118 0z"/>
             </svg>
           </div>
           <span class="text-sm text-gray-700">Budget Management</span>
@@ -360,7 +373,7 @@ $role = $_SESSION['role'];
           </div>
           <div class="p-2 bg-success-light rounded-lg">
             <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 01118 0z"/>
             </svg>
           </div>
         </div>
@@ -543,7 +556,9 @@ $role = $_SESSION['role'];
           </table>
         </div>
         <div class="p-4 border-t border-gray-200 text-center">
-          <a href="#" class="text-sm text-accent font-medium hover:text-blue-700 transition-smooth">View Detailed Budget Reports →</a>
+          <a href="#" class="text-sm text-accent font-medium hover:text-blue-700 transition-smooth">
+            View Detailed Budget Reports →
+          </a>
         </div>
       </div>
 
@@ -974,45 +989,8 @@ $role = $_SESSION['role'];
       card.classList.add('animate-slide-up');
     });
     
-    // Handle dropdown hover behavior
-    function setupDropdown(containerSelector, dropdownSelector) {
-      const container = document.querySelector(containerSelector);
-      const dropdown = document.querySelector(dropdownSelector);
-      
-      if (container && dropdown) {
-        let hideTimeout;
-        
-        container.addEventListener('mouseenter', function() {
-          clearTimeout(hideTimeout);
-          dropdown.style.opacity = '1';
-          dropdown.style.visibility = 'visible';
-          dropdown.style.transform = 'translateY(0)';
-        });
-        
-        container.addEventListener('mouseleave', function() {
-          hideTimeout = setTimeout(function() {
-            dropdown.style.opacity = '0';
-            dropdown.style.visibility = 'hidden';
-            dropdown.style.transform = 'translateY(-10px)';
-          }, 300);
-        });
-        
-        dropdown.addEventListener('mouseenter', function() {
-          clearTimeout(hideTimeout);
-        });
-        
-        dropdown.addEventListener('mouseleave', function() {
-          hideTimeout = setTimeout(function() {
-            dropdown.style.opacity = '0';
-            dropdown.style.visibility = 'hidden';
-            dropdown.style.transform = 'translateY(-10px)';
-          }, 300);
-        });
-      }
-    }
-    
-    // Setup dropdowns
-    setupDropdown('.dropdown-container', '.dropdown');
+    // REMOVE THE JavaScript dropdown setup since we're using CSS-only solution
+    // The CSS :hover selectors will handle both dropdowns independently
   });
 
   // Update charts on window resize
