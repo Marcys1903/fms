@@ -1,3 +1,20 @@
+<?php
+// Get the current page filename
+$current_page = basename($_SERVER['PHP_SELF']);
+
+// Define which menu each page belongs to
+$menu_mapping = [
+    'dashboard.php' => ['main' => 'dashboard', 'sub' => null],
+    'budgetplanning.php' => ['main' => 'financial-planning', 'sub' => 'budgetplanning'],
+    'approvalmanagement.php' => ['main' => 'financial-planning', 'sub' => 'approvalmanagement'],
+    'fundallocation.php' => ['main' => 'financial-planning', 'sub' => 'fundallocation'],
+    // Add more pages here as you create them
+];
+
+$active_menu = isset($menu_mapping[$current_page]) ? $menu_mapping[$current_page]['main'] : null;
+$active_submenu = isset($menu_mapping[$current_page]) ? $menu_mapping[$current_page]['sub'] : null;
+?>
+
 <!-- Sidebar -->
 <aside class="bg-sidebar text-white w-72 flex-shrink-0 h-full overflow-y-auto pt-6 pb-10 px-4 hidden md:block border-r border-gray-800">
   <!-- Logo & Title -->
@@ -24,7 +41,8 @@
   <!-- Navigation -->
   <nav class="space-y-2 px-1">
     <!-- Dashboard Link (Always Visible) -->
-    <a href="dashboard.php" class="flex items-center gap-3 p-3 rounded-lg bg-accent/15 text-accent hover:bg-accent/20 transition-all duration-200 group border border-accent/20">
+    <a href="dashboard.php" 
+       class="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group border <?php echo ($active_menu == 'dashboard') ? 'bg-accent/15 text-accent border-accent/20' : 'hover:bg-gray-800/70 text-gray-300 border-transparent'; ?>">
       <div class="w-5 h-5">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -40,19 +58,20 @@
     </div>
     
     <!-- Module 1: Financial Planning & Budget Management -->
-    <div x-data="{ open: false }" class="transition-all duration-200">
+    <div x-data="{ open: <?php echo ($active_menu == 'financial-planning') ? 'true' : 'false'; ?> }" class="transition-all duration-200">
       <button @click="open = !open" 
-              class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-800/70 transition-all duration-200 group"
-              :class="open ? 'bg-gray-800/70' : ''">
+              class="w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 group"
+              :class="open ? 'bg-gray-800/70' : 'hover:bg-gray-800/70'"
+              <?php if ($active_menu == 'financial-planning') echo 'style="background-color: rgba(55, 65, 81, 0.7);"'; ?>>
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors"
-               :class="open ? 'bg-accent/20' : ''">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+               style="<?php echo ($active_menu == 'financial-planning') ? 'background-color: rgba(59, 130, 246, 0.2);' : 'background-color: rgba(59, 130, 246, 0.1);'; ?>">
             <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
           </div>
           <div class="text-left">
-            <span class="text-sm font-medium">Financial Planning</span>
+            <span class="text-sm font-medium <?php echo ($active_menu == 'financial-planning') ? 'text-accent' : 'text-gray-300'; ?>">Financial Planning</span>
             <p class="text-xs text-gray-400">Budget Management</p>
           </div>
         </div>
@@ -64,21 +83,24 @@
       </button>
       
       <div x-show="open" x-collapse class="ml-10 mt-1 mb-2 space-y-1 border-l border-gray-700/50 pl-4 py-2">
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-accent transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="budgetplanning.php" 
+           class="block py-2 px-3 text-sm rounded transition-all duration-150 hover:pl-4 group/sub <?php echo ($active_submenu == 'budgetplanning') ? 'bg-gray-800/50 text-accent pl-4' : 'text-gray-300 hover:bg-gray-800/50 hover:text-accent'; ?>">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-accent opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
-            <span>Budget Planning</span>
+            <div class="w-1.5 h-1.5 rounded-full bg-accent <?php echo ($active_submenu == 'budgetplanning') ? 'opacity-100' : 'opacity-0 group-hover/sub:opacity-100'; ?> transition-opacity"></div>
+            <span>Budget</span>
           </div>
         </a>
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-accent transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="approvalmanagement.php" 
+           class="block py-2 px-3 text-sm rounded transition-all duration-150 hover:pl-4 group/sub <?php echo ($active_submenu == 'approvalmanagement') ? 'bg-gray-800/50 text-accent pl-4' : 'text-gray-300 hover:bg-gray-800/50 hover:text-accent'; ?>">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-accent opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-accent <?php echo ($active_submenu == 'approvalmanagement') ? 'opacity-100' : 'opacity-0 group-hover/sub:opacity-100'; ?> transition-opacity"></div>
             <span>Approval Management</span>
           </div>
         </a>
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-accent transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="fundallocation.php" 
+           class="block py-2 px-3 text-sm rounded transition-all duration-150 hover:pl-4 group/sub <?php echo ($active_submenu == 'fundallocation') ? 'bg-gray-800/50 text-accent pl-4' : 'text-gray-300 hover:bg-gray-800/50 hover:text-accent'; ?>">
           <div class="flex items-center gap-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-accent opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-accent <?php echo ($active_submenu == 'fundallocation') ? 'opacity-100' : 'opacity-0 group-hover/sub:opacity-100'; ?> transition-opacity"></div>
             <span>Fund Allocation</span>
           </div>
         </a>
@@ -86,19 +108,21 @@
     </div>
     
     <!-- Module 2: Revenue & Payment Management -->
-    <div x-data="{ open: false }" class="transition-all duration-200">
+    <div x-data="{ open: <?php echo ($active_menu == 'revenue-payments') ? 'true' : 'false'; ?> }" class="transition-all duration-200">
       <button @click="open = !open" 
               class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-800/70 transition-all duration-200 group"
-              :class="open ? 'bg-gray-800/70' : ''">
+              :class="open ? 'bg-gray-800/70' : ''"
+              <?php if ($active_menu == 'revenue-payments') echo 'style="background-color: rgba(55, 65, 81, 0.7);"'; ?>>
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center group-hover:bg-success/20 transition-colors"
-               :class="open ? 'bg-success/20' : ''">
+               :class="open ? 'bg-success/20' : ''"
+               style="<?php echo ($active_menu == 'revenue-payments') ? 'background-color: rgba(16, 185, 129, 0.2);' : ''; ?>">
             <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
           <div class="text-left">
-            <span class="text-sm font-medium">Revenue & Payments</span>
+            <span class="text-sm font-medium <?php echo ($active_menu == 'revenue-payments') ? 'text-success' : 'text-gray-300'; ?>">Revenue & Payments</span>
             <p class="text-xs text-gray-400">Payment Management</p>
           </div>
         </div>
@@ -110,13 +134,14 @@
       </button>
       
       <div x-show="open" x-collapse class="ml-10 mt-1 mb-2 space-y-1 border-l border-gray-700/50 pl-4 py-2">
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="revenuerecording.php" 
+           class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-success opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
             <span>Revenue Recording</span>
           </div>
         </a>
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="revenuetracking.php" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-success opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
             <span>Revenue Tracking</span>
@@ -138,19 +163,21 @@
     </div>
     
     <!-- Module 3: Expense, Procurement & Accounts Payable -->
-    <div x-data="{ open: false }" class="transition-all duration-200">
+    <div x-data="{ open: <?php echo ($active_menu == 'expense-procurement') ? 'true' : 'false'; ?> }" class="transition-all duration-200">
       <button @click="open = !open" 
               class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-800/70 transition-all duration-200 group"
-              :class="open ? 'bg-gray-800/70' : ''">
+              :class="open ? 'bg-gray-800/70' : ''"
+              <?php if ($active_menu == 'expense-procurement') echo 'style="background-color: rgba(55, 65, 81, 0.7);"'; ?>>
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center group-hover:bg-warning/20 transition-colors"
-               :class="open ? 'bg-warning/20' : ''">
+               :class="open ? 'bg-warning/20' : ''"
+               style="<?php echo ($active_menu == 'expense-procurement') ? 'background-color: rgba(245, 158, 11, 0.2);' : ''; ?>">
             <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
           <div class="text-left">
-            <span class="text-sm font-medium">Expense & Procurement</span>
+            <span class="text-sm font-medium <?php echo ($active_menu == 'expense-procurement') ? 'text-warning' : 'text-gray-300'; ?>">Expense & Procurement</span>
             <p class="text-xs text-gray-400">Accounts Payable</p>
           </div>
         </div>
@@ -190,19 +217,21 @@
     </div>
     
     <!-- Module 4: Asset & Compliance Management -->
-    <div x-data="{ open: false }" class="transition-all duration-200">
+    <div x-data="{ open: <?php echo ($active_menu == 'asset-compliance') ? 'true' : 'false'; ?> }" class="transition-all duration-200">
       <button @click="open = !open" 
               class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-800/70 transition-all duration-200 group"
-              :class="open ? 'bg-gray-800/70' : ''">
+              :class="open ? 'bg-gray-800/70' : ''"
+              <?php if ($active_menu == 'asset-compliance') echo 'style="background-color: rgba(55, 65, 81, 0.7);"'; ?>>
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-info/10 flex items-center justify-center group-hover:bg-info/20 transition-colors"
-               :class="open ? 'bg-info/20' : ''">
+               :class="open ? 'bg-info/20' : ''"
+               style="<?php echo ($active_menu == 'asset-compliance') ? 'background-color: rgba(59, 130, 246, 0.2);' : ''; ?>">
             <svg class="w-4 h-4 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
           </div>
           <div class="text-left">
-            <span class="text-sm font-medium">Asset & Compliance</span>
+            <span class="text-sm font-medium <?php echo ($active_menu == 'asset-compliance') ? 'text-info' : 'text-gray-300'; ?>">Asset & Compliance</span>
             <p class="text-xs text-gray-400">Management</p>
           </div>
         </div>
@@ -236,19 +265,21 @@
     </div>
     
     <!-- Module 5: System Security & Audit Control -->
-    <div x-data="{ open: false }" class="transition-all duration-200">
+    <div x-data="{ open: <?php echo ($active_menu == 'security-audit') ? 'true' : 'false'; ?> }" class="transition-all duration-200">
       <button @click="open = !open" 
               class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-800/70 transition-all duration-200 group"
-              :class="open ? 'bg-gray-800/70' : ''">
+              :class="open ? 'bg-gray-800/70' : ''"
+              <?php if ($active_menu == 'security-audit') echo 'style="background-color: rgba(55, 65, 81, 0.7);"'; ?>>
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center group-hover:bg-danger/20 transition-colors"
-               :class="open ? 'bg-danger/20' : ''">
+               :class="open ? 'bg-danger/20' : ''"
+               style="<?php echo ($active_menu == 'security-audit') ? 'background-color: rgba(239, 68, 68, 0.2);' : ''; ?>">
             <svg class="w-4 h-4 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
           </div>
           <div class="text-left">
-            <span class="text-sm font-medium">Security & Audit</span>
+            <span class="text-sm font-medium <?php echo ($active_menu == 'security-audit') ? 'text-danger' : 'text-gray-300'; ?>">Security & Audit</span>
             <p class="text-xs text-gray-400">System Control</p>
           </div>
         </div>
