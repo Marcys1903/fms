@@ -189,7 +189,7 @@ $active_submenu = isset($menu_mapping[$current_page]) ? $menu_mapping[$current_p
       </button>
       
       <div x-show="open" x-collapse class="ml-10 mt-1 mb-2 space-y-1 border-l border-gray-700/50 pl-4 py-2">
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-warning transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="expense_logging.php" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-warning transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-warning opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
             <span>Expense Logging</span>
