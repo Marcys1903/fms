@@ -147,13 +147,13 @@ $active_submenu = isset($menu_mapping[$current_page]) ? $menu_mapping[$current_p
             <span>Revenue Tracking</span>
           </div>
         </a>
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="accountsreceivable.php" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-success opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
             <span>Accounts Receivable</span>
           </div>
         </a>
-        <a href="#" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
+        <a href="receivablenotification.php" class="block py-2 px-3 text-sm rounded hover:bg-gray-800/50 hover:text-success transition-all duration-150 text-gray-300 hover:pl-4 group/sub">
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-success opacity-0 group-hover/sub:opacity-100 transition-opacity"></div>
             <span>Receivable Notification</span>
